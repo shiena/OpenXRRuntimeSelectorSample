@@ -4,52 +4,44 @@ using OpenXRRuntimeJsons;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.XR.Management;
 
 public class MenuController : MonoBehaviour
 {
-    [SerializeField] private GameObject buttonPrefab;
+    [SerializeField] private Transform buttonsParent;
+    [SerializeField] private StartXRButton buttonPrefab;
+    [SerializeField] private Text message;
 
     private void Start()
     {
+        message.text = "";
         var runtimes = OpenXRRuntimeJson.GetRuntimeJsonPaths();
         foreach (var (runtimeType, jsonPath) in runtimes.Select(d => (d.Key, d.Value)))
         {
-            var buttonObj = Instantiate(buttonPrefab, transform, false);
-            if (buttonObj.GetComponentInChildren<Text>() is var text)
+            void LoadXR()
             {
-                text.text = runtimeType.ToString();
-                text.resizeTextForBestFit = true;
+                StartCoroutine(LoadXRCoroutine(jsonPath));
             }
 
-            if (buttonObj.GetComponentInChildren<Button>() is var button)
-            {
-                void LoadVR()
-                {
-                    OpenXRRuntimeJson.SetRuntimeJsonPath(jsonPath);
-                    StartCoroutine(StartXR());
-                }
-
-                button.onClick.AddListener(LoadVR);
-            }
+            var buttonObj = Instantiate(buttonPrefab, buttonsParent.transform, false);
+            buttonObj.SetLabel(runtimeType.ToString());
+            buttonObj.AddListener(LoadXR);
         }
     }
 
-    private IEnumerator StartXR()
+    private IEnumerator LoadXRCoroutine(string jsonPath)
     {
-        Debug.Log("Initializing XR...");
-        yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
-
-        if (XRGeneralSettings.Instance.Manager.activeLoader == null)
+        OpenXRRuntimeJson.SetRuntimeJsonPath(jsonPath);
+        var routine = ManualXRControl.StartXRCoroutine();
+        yield return StartCoroutine(routine);
+        if (routine.Current is bool ret && ret)
         {
-            Debug.LogError("Initializing XR Failed. Check Editor or Player log for details.");
+            SceneManager.LoadScene("VR");
         }
         else
         {
-            Debug.Log("Starting XR...");
-            XRGeneralSettings.Instance.Manager.StartSubsystems();
+            message.text = "Initializing XR Failed";
+            yield return new WaitForSeconds(3f);
+            message.text = "";
         }
-        SceneManager.LoadScene("VR");
     }
-
 }

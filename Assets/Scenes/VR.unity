@@ -651,7 +651,7 @@ GameObject:
   - component: {fileID: 1514737002}
   - component: {fileID: 1514737001}
   m_Layer: 0
-  m_Name: ManualXRControl
+  m_Name: System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -666,7 +666,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1514737000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7df7d2bceb9466dabfc322efae50194, type: 3}
+  m_Script: {fileID: 11500000, guid: 64b7a2ad0cd44ded9a81ba868eafb4d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1514737002
