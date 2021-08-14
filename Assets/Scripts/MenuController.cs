@@ -19,18 +19,19 @@ public class MenuController : MonoBehaviour
         {
             void LoadXR()
             {
-                StartCoroutine(LoadXRCoroutine(jsonPath));
+                StartCoroutine(LoadXRCoroutine(runtimeType));
             }
 
             var buttonObj = Instantiate(buttonPrefab, buttonsParent.transform, false);
             buttonObj.SetLabel(runtimeType.ToString());
             buttonObj.AddListener(LoadXR);
+            Debug.Log($"Runtime Type: {runtimes}, JSON Path: {jsonPath}");
         }
     }
 
-    private IEnumerator LoadXRCoroutine(string jsonPath)
+    private IEnumerator LoadXRCoroutine(OpenXRRuntimeType runtimeType)
     {
-        OpenXRRuntimeJson.SetRuntimeJsonPath(jsonPath);
+        OpenXRRuntimeJson.SetRuntimeJsonPath(runtimeType);
         var routine = ManualXRControl.StartXRCoroutine();
         yield return StartCoroutine(routine);
         if (routine.Current is bool ret && ret)
