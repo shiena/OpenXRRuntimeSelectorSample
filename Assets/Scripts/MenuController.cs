@@ -13,7 +13,7 @@ public class MenuController : MonoBehaviour
 
     private void Start()
     {
-        message.text = "";
+        message.HideErrorMessage();
         var runtimes = OpenXRRuntimeJson.GetRuntimeJsonPaths();
         foreach (var (runtimeType, jsonPath) in runtimes.Select(d => (d.Key, d.Value)))
         {
@@ -40,9 +40,24 @@ public class MenuController : MonoBehaviour
         }
         else
         {
-            message.text = "Initializing XR Failed";
+            message.ShowErrorMessage("Initializing XR Failed");
             yield return new WaitForSeconds(3f);
-            message.text = "";
+            message.HideErrorMessage();
         }
+    }
+}
+
+static class TextExtensions
+{
+    public static void ShowErrorMessage(this Text text, string message)
+    {
+        text.raycastTarget = true;
+        text.text = message;
+    }
+
+    public static void HideErrorMessage(this Text text)
+    {
+        text.raycastTarget = false;
+        text.text = string.Empty;
     }
 }
