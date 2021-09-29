@@ -6,10 +6,16 @@ public class ManualXRControl
 {
     public static IEnumerator StartXRCoroutine()
     {
+        if (XRGeneralSettings.Instance.Manager.isInitializationComplete)
+        {
+            yield return true;
+            yield break;
+        }
+
         Debug.Log("Initializing XR...");
         yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
 
-        if (XRGeneralSettings.Instance.Manager.activeLoader == null)
+        if (!XRGeneralSettings.Instance.Manager.isInitializationComplete)
         {
             Debug.LogError("Initializing XR Failed. Check Editor or Player log for details.");
             yield return false;
