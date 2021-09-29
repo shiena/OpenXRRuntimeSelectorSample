@@ -36,7 +36,7 @@ public class MenuController : MonoBehaviour
         yield return StartCoroutine(routine);
         if (routine.Current is bool ret && ret)
         {
-            SceneManager.LoadScene("VR");
+            SceneManager.LoadScene("Scenes/VR");
         }
         else
         {
